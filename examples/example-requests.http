@@ -1,0 +1,29 @@
+###Aggregated Data
+GET http://localhost:8080/aggregated/get
+user: myUser
+pass: myPass
+vin: myVin
+
+### Raw Data from Efficiency API
+GET http://localhost:8080/data/efficiency
+user: myUser
+pass: myPass
+vin: myVin
+
+### Raw Data from Dynamic API
+GET http://localhost:8080/data/dynamic
+user: myUser
+pass: myPass
+vin: myVin
+
+### Raw Data from Navigation API
+GET http://localhost:8080/data/navigation
+user: myUser
+pass: myPass
+vin: myVin
+
+### Raw Data from Chargingprofile API
+GET http://localhost:8080/data/chargingprofile
+user: myUser
+pass: myPass
+vin: myVin

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="tokenService" class="com.fnordfisch.i3connect.service.TokenService">
+    <property name="url" value="https://customer.bmwgroup.com/gcdm/oauth/authenticate"/>
+    <property name="queryParams">
+      <map>
+        <entry key="client_id" value="dbf0a542-ebd1-4ff0-a9a7-55172fbfce35"/>
+        <entry key="redirect_uri" value="https://www.bmw-connecteddrive.com/app/static/external-dispatch.html"/>
+        <entry key="response_type" value="token"/>
+        <entry key="scope" value="authenticate_user fupo"/>
+        <entry key="locale" value="DE-de"/>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="dataService" class="com.fnordfisch.i3connect.service.DataService">
+    <property name="functions">
+      <map>
+        <entry key="DYNAMIC" value="dynamic/v1/"/>
+        <entry key="NAVIGATION" value="navigation/v1/"/>
+        <entry key="EFFICIENCY" value="efficiency/v1/"/>
+        <entry key="CHARGINGPROFILE" value="remoteservices/chargingprofile/v1/"/>
+        <!--/webapi/v1/user/vehicles/:VIN/statistics/lastTrip-->
+        <!--/webapi/v1/user/vehicles/:VIN/statistics/allTrips-->
+      </map>
+    </property>
+  </bean>
+
+  <bean id="aggregationService" class="com.fnordfisch.i3connect.service.AggregationService">
+    <property name="dataService" ref="dataService"/>
+    <property name="extractablesByFunction">
+      <map>
+        <entry key="DYNAMIC">
+          <map>
+            <entry key="beMaxRangeElectricKm" value="$['attributesMap']['beMaxRangeElectricKm']"/>
+            <entry key="beRemainingRangeElectricKm" value="$['attributesMap']['beRemainingRangeElectricKm']"/>
+            <entry key="mileage" value="$['attributesMap']['mileage']"/>
+            <entry key="soc_hv_percent" value="$['attributesMap']['soc_hv_percent']"/>
+            <entry key="chargingLevelHv" value="$['attributesMap']['chargingLevelHv']"/>
+            <entry key="battery_size_max" value="$['attributesMap']['battery_size_max']"/>
+            <entry key="gps_lat" value="$['attributesMap']['gps_lat']"/>
+            <entry key="gps_lng" value="$['attributesMap']['gps_lng']"/>
+          </map>
+        </entry>
+        <entry key="NAVIGATION">
+          <map>
+            <entry key="latitude" value="$['latitude']"/>
+            <entry key="longitude" value="$['longitude']"/>
+            <entry key="soc" value="$['soc']"/>
+            <entry key="socmax" value="$['socmax']"/>
+            <entry key="kup" value="$['kup']"/>
+            <entry key="kdown" value="$['kdown']"/>
+          </map>
+        </entry>
+        <entry key="EFFICIENCY">
+          <map>
+            <entry key="avgConsumption" value="scoreList[?(@.attrName == 'AVERAGE_ELECTRIC_CONSUMPTION')]['lifeTime']"/>
+            <entry key="avgRecuperation"
+                   value="scoreList[?(@.attrName == 'AVERAGE_RECUPERATED_ENERGY_PER_100_KM')]['lifeTime']"/>
+            <!--<entry key="maxDistanceWithoutCharging" value="scoreList[?(@.attrName == 'LONGEST_DISTANCE_WITHOUT_CHARGING')]['lifeTime']"/>-->
+            <entry key="lastTrip_Distance" value="lastTripList[?(@.name == 'LASTTRIP_DELTA_KM')]['lastTrip']"/>
+            <!--<entry key="lastTrip_DistanceWithoutCharging" value="lastTripList[?(@.name == 'ACTUAL_DISTANCE_WITHOUT_CHARGING')]['lastTrip']"/>-->
+            <entry key="lastTrip_avgConsumption"
+                   value="lastTripList[?(@.name == 'AVERAGE_ELECTRIC_CONSUMPTION')]['lastTrip']"/>
+            <entry key="lastTrip_avgRecuperation"
+                   value="lastTripList[?(@.name == 'AVERAGE_RECUPERATED_ENERGY_PER_100_KM')]['lastTrip']"/>
+            <entry key="efficiencyQuotient" value="$['efficiencyQuotient']"/>
+          </map>
+        </entry>
+      </map>
+    </property>
+  </bean>
+</beans>
